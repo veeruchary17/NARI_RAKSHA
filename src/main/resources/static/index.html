@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nari Raksha - Women's Safety & Emergency Navigation</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen overflow-hidden font-sans antialiased">
+
+<!-- =========================================
+     FULLSCREEN BACKGROUND MAP
+     ========================================= -->
+
+<div id="app-map"
+     class="fixed inset-0 w-full h-full z-0"></div>
+
+<!-- MAP GRADIENT OVERLAY -->
+
+<div class="fixed inset-0 z-10 pointer-events-none
+              bg-gradient-to-t from-slate-950/50
+              via-slate-950/10 to-slate-950/40"></div>
+
+
+<!-- =========================================
+     AUTHENTICATION / LOGIN SCREEN
+     ========================================= -->
+
+<div id="auth-screen"
+     class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-xl
+              flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-slate-900/90
+                border border-slate-800 rounded-2xl
+                p-6 sm:p-8 shadow-2xl relative
+                overflow-hidden backdrop-blur-md">
+
+        <div class="absolute -top-20 -left-20
+                  w-40 h-40 bg-rose-600/30
+                  rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="absolute -bottom-20 -right-20
+                  w-40 h-40 bg-indigo-600/30
+                  rounded-full blur-3xl pointer-events-none"></div>
+
+
+        <!-- LOGO -->
+
+        <div class="text-center mb-6">
+
+            <div class="inline-flex bg-gradient-to-tr
+                    from-rose-600 to-indigo-600
+                    p-3 rounded-2xl text-white
+                    shadow-xl shadow-rose-950/50 mb-3">
+
+                <i data-lucide="shield-check" class="w-8 h-8"></i>
+
+            </div>
+
+            <h1 class="text-2xl font-bold
+                   bg-gradient-to-r from-white
+                   via-slate-200 to-slate-400
+                   bg-clip-text text-transparent">
+
+                Nari Raksha (नारी रक्षा)
+
+            </h1>
+
+            <p class="text-xs text-slate-400 mt-1">
+                Privacy-Preserving Safety Navigation
+            </p>
+
+        </div>
+
+
+        <!-- LOGIN FORM -->
+
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+
+            <div>
+
+                <label class="block text-xs text-slate-400
+                        mb-1 font-medium">
+
+                    Select Portal Role
+
+                </label>
+
+                <select id="user-role"
+                        class="w-full bg-slate-950
+                         border border-slate-800
+                         rounded-xl px-3 py-2.5
+                         text-sm text-slate-200
+                         focus:outline-none
+                         focus:border-rose-500">
+
+                    <option value="A">Traveller User</option>
+
+                    <option value="D">Emergency Control Officer</option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-xs text-slate-400
+                        mb-1 font-medium">
+
+                    Email Address
+
+                </label>
+
+                <div class="relative">
+
+                    <input
+                            type="email"
+                            value="ananya@nariraksha.in"
+                            required
+                            class="w-full bg-slate-950
+                     border border-slate-800
+                     rounded-xl px-3 py-2.5
+                     text-sm text-slate-200
+                     focus:outline-none
+                     focus:border-rose-500 pl-9">
+
+                    <i data-lucide="mail"
+                       class="w-4 h-4 text-slate-500
+                      absolute left-3 top-3"></i>
+
+                </div>
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-xs text-slate-400
+                        mb-1 font-medium">
+
+                    Password
+
+                </label>
+
+                <div class="relative">
+
+                    <input
+                            type="password"
+                            value="••••••••"
+                            required
+                            class="w-full bg-slate-950
+                     border border-slate-800
+                     rounded-xl px-3 py-2.5
+                     text-sm text-slate-200
+                     focus:outline-none
+                     focus:border-rose-500 pl-9">
+
+                    <i data-lucide="lock"
+                       class="w-4 h-4 text-slate-500
+                      absolute left-3 top-3"></i>
+
+                </div>
+
+            </div>
+
+
+            <button
+                    type="submit"
+                    class="w-full bg-gradient-to-r
+                 from-rose-600 to-indigo-600
+                 hover:from-rose-500 hover:to-indigo-500
+                 text-white font-semibold py-3
+                 rounded-xl text-sm transition
+                 shadow-lg shadow-rose-950/40
+                 flex items-center justify-center gap-2 mt-2">
+
+                <i data-lucide="log-in" class="w-4 h-4"></i>
+
+                Sign In to Portal
+
+            </button>
+
+        </form>
+
+
+        <!-- QUICK DEMO LOGIN -->
+
+        <div class="mt-4 pt-4 border-t border-slate-800/80 text-center">
+
+            <button
+                    onclick="quickDemoLogin()"
+                    class="w-full bg-slate-950/80 hover:bg-slate-800
+                 border border-slate-800 text-slate-300
+                 py-2.5 rounded-xl text-xs font-medium
+                 transition flex items-center justify-center gap-2">
+
+                <i data-lucide="zap"
+                   class="w-4 h-4 text-amber-400"></i>
+
+                Hackathon Quick Demo Login
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     TOP NAVIGATION BAR
+     ========================================= -->
+
+<header id="app-header"
+        class="hidden fixed top-0 left-0 right-0 z-30 p-4">
+
+    <div class="max-w-7xl mx-auto bg-slate-900/80
+                backdrop-blur-xl border border-slate-800/80
+                rounded-2xl p-3 flex flex-wrap
+                items-center justify-between gap-4 shadow-2xl">
+
+
+        <!-- BRAND -->
+
+        <div class="flex items-center gap-3 pl-2">
+
+            <div class="bg-gradient-to-tr from-rose-600
+                    to-indigo-600 p-2 rounded-xl
+                    text-white shadow-lg shadow-rose-950/50">
+
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+
+            </div>
+
+            <div>
+
+                <h1 class="font-bold text-base leading-none
+                     bg-gradient-to-r from-white
+                     via-slate-200 to-slate-400
+                     bg-clip-text text-transparent">
+
+                    Nari Raksha
+
+                </h1>
+
+                <p id="role-badge"
+                   class="text-[10px] text-rose-400
+                    font-medium flex items-center gap-1 mt-0.5">
+
+            <span class="w-1.5 h-1.5 rounded-full
+                         bg-emerald-500 animate-pulse"></span>
+
+                    Mode: Traveller
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ROLE NAVIGATION -->
+
+        <nav id="role-nav-switcher"
+             class="flex bg-slate-950/80 p-1
+                  rounded-xl border border-slate-800/80
+                  text-xs font-medium overflow-x-auto">
+
+            <button
+                    id="tab-A"
+                    onclick="switchScreen('A')"
+                    class="nav-tab role-tab-A px-3.5 py-2
+                 rounded-lg flex items-center gap-2
+                 transition-all duration-200 active-tab">
+
+                <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
+
+                <span>Traveller Home</span>
+
+            </button>
+
+
+            <button
+                    id="tab-D"
+                    onclick="switchScreen('D')"
+                    class="nav-tab role-tab-D hidden px-3.5 py-2
+                 rounded-lg items-center gap-2
+                 transition-all duration-200
+                 text-slate-400 hover:text-white">
+
+                <i data-lucide="siren" class="w-3.5 h-3.5"></i>
+
+                <span>Emergency Dispatch Desk</span>
+
+            </button>
+
+        </nav>
+
+
+        <!-- HEADER ACTIONS -->
+
+        <div class="flex items-center gap-2 pr-1">
+
+            <button
+                    id="btn-top-sos"
+                    onclick="triggerEmergencySOS()"
+                    class="bg-gradient-to-r from-red-600 to-rose-600
+                 hover:from-red-500 hover:to-rose-500
+                 text-white font-bold px-3.5 py-2
+                 rounded-xl text-xs uppercase tracking-wider
+                 flex items-center gap-1.5
+                 shadow-lg shadow-red-950/60
+                 animate-pulse transition">
+
+                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+
+                <span>SOS Alert</span>
+
+            </button>
+
+
+            <button
+                    onclick="handleLogout()"
+                    title="Logout"
+                    class="bg-slate-950 hover:bg-slate-800
+                 border border-slate-800 p-2
+                 rounded-xl text-slate-400 hover:text-white transition">
+
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     MAIN APPLICATION AREA
+     ========================================= -->
+
+<main id="app-main"
+      class="hidden fixed inset-0 top-20 z-20 p-4 pointer-events-none">
+
+    <div class="max-w-7xl mx-auto h-[calc(100vh-100px)] relative">
+
+
+        <!-- =====================================
+             SCREEN A: TRAVELLER HOME
+             ===================================== -->
+
+        <div id="screen-A"
+             class="screen-panel grid grid-cols-1
+                  lg:grid-cols-12 gap-6 h-full pointer-events-auto">
+
+
+            <!-- LEFT: ROUTE PLANNER -->
+
+            <div class="lg:col-span-4 flex flex-col gap-4
+                    overflow-y-auto pr-1">
+
+
+                <!-- SAFE ROUTE PLANNER -->
+
+                <div class="bg-slate-900/85 backdrop-blur-xl
+                      border border-slate-800/80
+                      rounded-2xl p-4 shadow-2xl">
+
+                    <h2 class="text-xs font-semibold text-slate-300
+                       mb-3 flex items-center gap-2">
+
+                        <i data-lucide="map-pin"
+                           class="w-4 h-4 text-rose-500"></i>
+
+                        Safe Route Planner
+
+                    </h2>
+
+
+                    <div class="space-y-3">
+
+                        <div>
+
+                            <label class="text-[10px] text-slate-400
+                              mb-1 block">
+
+                                Current Location
+
+                            </label>
+
+                            <div class="relative">
+
+                                <input
+                                        id="start-input"
+                                        type="text"
+                                        value="Tamil Nadu"
+                                        class="w-full bg-slate-950/80
+                           border border-slate-800
+                           rounded-xl px-3 py-2
+                           text-xs text-slate-200
+                           focus:outline-none
+                           focus:border-rose-500 pl-8">
+
+                                <i data-lucide="disc"
+                                   class="w-3.5 h-3.5 text-emerald-500
+                            absolute left-2.5 top-2.5"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <label class="text-[10px] text-slate-400
+                              mb-1 block">
+
+                                Destination
+
+                            </label>
+
+                            <div class="relative">
+
+                                <input
+                                        id="dest-input"
+                                        type="text"
+                                        value="Hyderabad"
+                                        class="w-full bg-slate-950/80
+                           border border-slate-800
+                           rounded-xl px-3 py-2
+                           text-xs text-slate-200
+                           focus:outline-none
+                           focus:border-rose-500 pl-8">
+
+                                <i data-lucide="map-pin"
+                                   class="w-3.5 h-3.5 text-rose-500
+                            absolute left-2.5 top-2.5"></i>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                                id="btn-search-route"
+                                onclick="calculateRoutes()"
+                                class="w-full bg-rose-600 hover:bg-rose-500
+                       text-white font-medium py-2 rounded-xl
+                       text-xs transition flex items-center
+                       justify-center gap-2 shadow-lg shadow-rose-950/40">
+
+                            <i data-lucide="search" class="w-3.5 h-3.5"></i>
+
+                            Find Safest Route
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ROUTE SAFETY ANALYSIS -->
+
+                <div class="bg-slate-900/85 backdrop-blur-xl
+                      border border-slate-800/80
+                      rounded-2xl p-4 shadow-2xl
+                      flex-1 flex flex-col gap-3">
+
+                    <h2 class="text-xs font-semibold text-slate-300
+                       flex items-center justify-between">
+
+                        <span>Route Safety Risk Index</span>
+
+                        <span class="text-[10px] text-slate-500 font-normal">
+                Demo Estimates
+              </span>
+
+                    </h2>
+
+
+                    <!-- SAFEST ROUTE -->
+
+                    <div
+                            onclick="selectRoute('safe')"
+                            id="route-card-safe"
+                            class="route-card border-2 border-emerald-500/50
+                     bg-emerald-950/30 p-3 rounded-xl
+                     cursor-pointer hover:border-emerald-500 transition">
+
+                        <div class="flex items-center justify-between mb-1.5">
+
+                <span class="text-[10px] font-semibold
+                             px-2 py-0.5 rounded
+                             bg-emerald-500/20 text-emerald-400
+                             border border-emerald-500/30">
+
+                  Safest Route
+
+                </span>
+
+                            <span id="safe-dist-time"
+                                  class="text-[10px] text-slate-400">
+
+                  631.9 km • 1137 mins
+
+                </span>
+
+                        </div>
+
+
+                        <div class="grid grid-cols-3 gap-2
+                          text-center my-2">
+
+                            <div class="bg-slate-950/60 p-1.5 rounded-lg">
+
+                                <p class="text-[9px] text-slate-400">
+                                    Safety Score
+                                </p>
+
+                                <p id="safe-score"
+                                   class="text-xs font-bold text-emerald-400">
+
+                                    91/100
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="bg-slate-950/60 p-1.5 rounded-lg">
+
+                                <p class="text-[9px] text-slate-400">
+                                    Lighting
+                                </p>
+
+                                <p class="text-xs font-bold text-emerald-400">
+                                    High
+                                </p>
+
+                            </div>
+
+
+                            <div class="bg-slate-950/60 p-1.5 rounded-lg">
+
+                                <p class="text-[9px] text-slate-400">
+                                    CCTV Cover
+                                </p>
+
+                                <p id="safe-cctv"
+                                   class="text-xs font-bold text-emerald-400">
+
+                                    86%
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="text-[10px] text-slate-400 mt-1
+                        flex items-center gap-1">
+
+                            <i data-lucide="check-circle-2"
+                               class="w-3 h-3 text-emerald-400"></i>
+
+                            Police patrols &amp; street lighting active.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- ALTERNATIVE ROUTE -->
+
+                    <div
+                            onclick="selectRoute('risk')"
+                            id="route-card-risk"
+                            class="route-card border border-slate-800
+                     bg-slate-950/50 p-3 rounded-xl
+                     cursor-pointer hover:border-amber-500/50 transition">
+
+                        <div class="flex items-center justify-between mb-1.5">
+
+                <span class="text-[10px] font-semibold
+                             px-2 py-0.5 rounded
+                             bg-amber-500/20 text-amber-400
+                             border border-amber-500/30">
+
+                  Alternative Route
+
+                </span>
+
+                            <span id="risk-dist-time"
+                                  class="text-[10px] text-slate-400">
+
+                  556.1 km • 834 mins
+
+                </span>
+
+                        </div>
+
+
+                        <div class="grid grid-cols-3 gap-2
+                          text-center my-2">
+
+                            <div class="bg-slate-950/60 p-1.5 rounded-lg">
+
+                                <p class="text-[9px] text-slate-400">
+                                    Safety Score
+                                </p>
+
+                                <p id="risk-score"
+                                   class="text-xs font-bold text-amber-400">
+
+                                    56/100
+
+                                </p>
+
+                            </div>
+
+
+                            <div class="bg-slate-950/60 p-1.5 rounded-lg">
+
+                                <p class="text-[9px] text-slate-400">
+                                    Lighting
+                                </p>
+
+                                <p class="text-xs font-bold text-amber-400">
+                                    Medium
+                                </p>
+
+                            </div>
+
+
+                            <div class="bg-slate-950/60 p-1.5 rounded-lg">
+
+                                <p class="text-[9px] text-slate-400">
+                                    CCTV Cover
+                                </p>
+
+                                <p id="risk-cctv"
+                                   class="text-xs font-bold text-amber-400">
+
+                                    36%
+
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="text-[10px] text-slate-400 mt-1
+                        flex items-center gap-1">
+
+                            <i data-lucide="alert-circle"
+                               class="w-3 h-3 text-amber-400"></i>
+
+                            Low lighting reported near bypass.
+
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- ANOMALY TEST -->
+
+                    <button
+                            onclick="simulateStuckAnomaly()"
+                            class="w-full bg-amber-600/20 hover:bg-amber-600/30
+                     border border-amber-500/40
+                     text-amber-300 font-medium py-2
+                     rounded-xl transition flex items-center
+                     justify-center gap-2 text-xs">
+
+                        <i data-lucide="alert-triangle"
+                           class="w-3.5 h-3.5 text-amber-400"></i>
+
+                        Test "Stuck/Stopped" Anomaly
+
+                    </button>
+
+
+
+                    <!-- START NAVIGATION -->
+
+                    <button
+                            id="btn-start-journey"
+                            onclick="startJourney()"
+                            class="w-full bg-emerald-600 hover:bg-emerald-500
+                     text-white font-bold py-2.5 rounded-xl
+                     transition flex items-center justify-center
+                     gap-2 text-xs shadow-lg shadow-emerald-950/40">
+
+                        <i data-lucide="play"
+                           class="w-3.5 h-3.5 fill-current"></i>
+
+                        Start Live Navigation
+
+                    </button>
+
+
+
+                    <!-- EMERGENCY CONTACTS -->
+
+                    <div class="border-t border-slate-800/80
+                        pt-3 mt-1 space-y-2">
+
+                        <div class="flex items-center justify-between">
+
+                            <h2 class="text-xs font-semibold text-slate-300
+                           flex items-center gap-1.5">
+
+                                <i data-lucide="phone-call"
+                                   class="w-3.5 h-3.5 text-rose-500"></i>
+
+                                Emergency Contacts
+
+                            </h2>
+
+
+                            <button
+                                    type="button"
+                                    onclick="toggleContactForm()"
+                                    class="text-[10px] bg-rose-600/20
+                         text-rose-400 hover:bg-rose-600/30
+                         px-2 py-0.5 rounded
+                         border border-rose-500/30 font-medium">
+
+                                + Add
+
+                            </button>
+
+                        </div>
+
+
+
+                        <!-- ADD CONTACT FORM -->
+
+                        <div id="add-contact-form"
+                             class="hidden bg-slate-950
+                          border border-slate-800 p-2.5
+                          rounded-xl space-y-2">
+
+                            <div>
+
+                                <label class="text-[9px] text-slate-400
+                                block mb-0.5">
+
+                                    Name / Relation
+
+                                </label>
+
+                                <input
+                                        id="contact-name-input"
+                                        type="text"
+                                        placeholder="e.g. Sister, Friend"
+                                        class="w-full bg-slate-900
+                           border border-slate-800
+                           rounded-lg px-2 py-1
+                           text-xs text-slate-200
+                           focus:outline-none
+                           focus:border-rose-500">
+
+                            </div>
+
+
+                            <div>
+
+                                <label class="text-[9px] text-slate-400
+                                block mb-0.5">
+
+                                    Phone Number
+
+                                </label>
+
+                                <input
+                                        id="contact-phone-input"
+                                        type="tel"
+                                        placeholder="+91 98765 00000"
+                                        class="w-full bg-slate-900
+                           border border-slate-800
+                           rounded-lg px-2 py-1
+                           text-xs text-slate-200
+                           focus:outline-none
+                           focus:border-rose-500">
+
+                            </div>
+
+
+                            <div class="flex gap-1.5 pt-1">
+
+                                <button
+                                        type="button"
+                                        onclick="saveEmergencyContact()"
+                                        class="w-full bg-rose-600 text-white
+                           text-[10px] font-bold py-1 rounded-lg">
+
+                                    Save
+
+                                </button>
+
+
+                                <button
+                                        type="button"
+                                        onclick="toggleContactForm()"
+                                        class="w-full bg-slate-800 text-slate-300
+                           text-[10px] py-1 rounded-lg">
+
+                                    Cancel
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- CONTACT LIST -->
+
+                        <div id="emergency-contacts-list"
+                             class="space-y-1.5 text-xs">
+
+                            <div class="bg-slate-950/80
+                            border border-slate-800
+                            p-2 rounded-xl
+                            flex items-center justify-between">
+
+                                <div>
+
+                                    <p class="font-bold text-slate-200 text-[11px]">
+                                        Parent / Guardian
+                                    </p>
+
+                                    <p class="text-[9px] text-slate-400">
+                                        +91 98765 43210
+                                    </p>
+
+                                </div>
+
+                                <a href="tel:+919876543210"
+                                   class="bg-emerald-600 hover:bg-emerald-500
+                            text-white p-1.5 rounded-lg">
+
+                                    <i data-lucide="phone" class="w-3 h-3"></i>
+
+                                </a>
+
+                            </div>
+
+
+                            <div class="bg-slate-950/80
+                            border border-slate-800
+                            p-2 rounded-xl
+                            flex items-center justify-between">
+
+                                <div>
+
+                                    <p class="font-bold text-slate-200 text-[11px]">
+                                        Police Control Room
+                                    </p>
+
+                                    <p class="text-[9px] text-slate-400">
+                                        112 / 100
+                                    </p>
+
+                                </div>
+
+                                <a href="tel:112"
+                                   class="bg-rose-600 hover:bg-rose-500
+                            text-white p-1.5 rounded-lg">
+
+                                    <i data-lucide="siren" class="w-3 h-3"></i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RIGHT: TRAVELLER MAP LEGEND -->
+
+            <div class="lg:col-span-8 flex flex-col
+                    justify-end items-end pointer-events-none">
+
+                <div class="pointer-events-auto
+                      bg-slate-900/85 backdrop-blur-xl
+                      border border-slate-800/80
+                      p-3 rounded-2xl text-xs
+                      space-y-2 shadow-2xl">
+
+                    <p class="font-bold text-slate-300">
+                        Map Infrastructure Legend
+                    </p>
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+
+                        Safe Route
+
+                    </div>
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+
+                        Caution Route
+
+                    </div>
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+
+                        Public CCTV Indicator
+
+                    </div>
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+
+                        Safe Zone / Police Station
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================================
+             SCREEN D: EMERGENCY CONTROL ROOM
+             ===================================== -->
+
+        <div id="screen-D"
+             class="screen-panel hidden grid-cols-1
+                  lg:grid-cols-12 gap-4 h-full pointer-events-auto">
+
+
+            <!-- =====================================
+                 LEFT SIDEBAR: CONTROL ROOM
+                 ===================================== -->
+
+            <aside class="control-room-sidebar lg:col-span-4
+                      flex flex-col gap-4 pr-1">
+
+
+                <!-- EMERGENCY INCIDENTS -->
+
+                <section class="bg-slate-900/90 backdrop-blur-xl
+                          border border-slate-800/80
+                          rounded-2xl p-4 shadow-2xl">
+
+                    <div class="flex items-center justify-between
+                        gap-2 border-b border-slate-800
+                        pb-3 mb-3">
+
+                        <h2 class="text-xs font-semibold text-slate-200
+                         flex items-center gap-2">
+
+                            <i data-lucide="siren"
+                               class="w-4 h-4 text-rose-500"></i>
+
+                            Emergency Control Center
+
+                        </h2>
+
+
+                        <span id="officer-status-badge"
+                              class="text-[9px] bg-emerald-500/20
+                           text-emerald-400
+                           border border-emerald-500/30
+                           px-2 py-1 rounded font-bold
+                           whitespace-nowrap">
+
+                MONITORING SYSTEM
+
+              </span>
+
+                    </div>
+
+
+                    <div class="flex items-center justify-between mb-3">
+
+                        <p class="text-[10px] uppercase tracking-wider
+                        text-slate-400 font-semibold">
+
+                            Emergency Incidents
+
+                        </p>
+
+                        <span class="text-[9px] text-slate-500">
+                Backend records
+              </span>
+
+                    </div>
+
+
+                    <div id="officer-incident-container"
+                         class="space-y-3">
+
+                        <div class="bg-slate-950
+                          border border-slate-800
+                          p-4 rounded-xl text-center
+                          text-slate-400 text-xs">
+
+                            <i data-lucide="shield-alert"
+                               class="w-8 h-8 text-slate-600
+                          mx-auto mb-2"></i>
+
+                            <p class="font-semibold text-slate-300">
+                                No Active Emergency Triggered
+                            </p>
+
+                            <p class="text-[10px] text-slate-500 mt-1">
+                                Awaiting distress signal or panic button activation...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- CCTV MONITORING -->
+
+                <section class="bg-slate-900/90 backdrop-blur-xl
+                          border border-slate-800/80
+                          rounded-2xl p-4 shadow-2xl">
+
+                    <div class="flex items-center justify-between
+                        gap-2 mb-2">
+
+                        <h2 class="text-xs font-bold text-slate-200
+                         flex items-center gap-2">
+
+                            <i data-lucide="camera"
+                               class="w-4 h-4 text-blue-400"></i>
+
+                            CCTV Monitoring
+
+                        </h2>
+
+
+                        <button
+                                type="button"
+                                onclick="loadCCTVData()"
+                                class="text-[10px] bg-slate-800
+                       hover:bg-slate-700 border
+                       border-slate-700 px-2.5 py-1.5 rounded-lg">
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+
+                    <p class="text-[10px] text-slate-400 mb-3">
+
+                        Demo camera status, simulated motion alerts and
+                        heartbeat details. No live video feeds are connected.
+
+                    </p>
+
+
+                    <div id="officer-cctv-container"
+                         class="grid grid-cols-1 gap-2">
+
+                        <p class="text-xs text-slate-400">
+                            Camera information will appear here.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- POLICE AND SAFETY RESOURCES -->
+
+                <section class="bg-slate-900/90 backdrop-blur-xl
+                          border border-slate-800/80
+                          rounded-2xl p-4 shadow-2xl">
+
+                    <div class="flex items-center justify-between
+                        gap-2 mb-3">
+
+                        <h2 class="text-xs font-bold text-slate-200
+                         flex items-center gap-2">
+
+                            <i data-lucide="shield-check"
+                               class="w-4 h-4 text-emerald-400"></i>
+
+                            Police &amp; Safety Resources
+
+                        </h2>
+
+
+                        <button
+                                type="button"
+                                onclick="loadSafetyResources()"
+                                class="text-[10px] bg-slate-800
+                       hover:bg-slate-700 border
+                       border-slate-700 px-2.5 py-1.5 rounded-lg">
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+
+                    <div id="officer-resources-container"
+                         class="grid grid-cols-1 gap-2">
+
+                        <p class="text-xs text-slate-400">
+                            Safety resources will appear here.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+
+
+            <!-- =====================================
+                 RIGHT: MAP STATUS AND LEGEND
+                 The existing Leaflet map remains
+                 behind this transparent area.
+                 ===================================== -->
+
+            <section class="control-room-map-area
+                        lg:col-span-8 relative
+                        min-h-[250px] pointer-events-none">
+
+
+                <!-- MAP STATUS -->
+
+                <div class="absolute top-3 right-3 z-[400]
+                      bg-slate-900/90 backdrop-blur-xl
+                      border border-slate-700/80
+                      rounded-xl px-4 py-3 shadow-xl">
+
+                    <div class="flex items-center gap-2 mb-1">
+
+              <span class="w-2 h-2 rounded-full
+                           bg-emerald-400 animate-pulse"></span>
+
+                        <p class="text-xs font-bold text-slate-100">
+                            Safety Map
+                        </p>
+
+                    </div>
+
+                    <p class="text-[10px] text-slate-400">
+                        CCTV and police markers
+                    </p>
+
+                </div>
+
+
+
+                <!-- MAP LEGEND -->
+
+                <div class="absolute bottom-4 right-3 z-[400]
+                      bg-slate-900/90 backdrop-blur-xl
+                      border border-slate-700/80
+                      rounded-xl p-3 shadow-xl">
+
+                    <p class="text-[10px] font-bold
+                      text-slate-200 mb-2">
+
+                        MAP LEGEND
+
+                    </p>
+
+
+                    <div class="flex items-center gap-2
+                        text-[10px] text-slate-300 mb-1.5">
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+
+                        Police Station
+
+                    </div>
+
+
+                    <div class="flex items-center gap-2
+                        text-[10px] text-slate-300">
+
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+
+                        CCTV Camera
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+
+<!-- =========================================
+     EXISTING JAVASCRIPT
+     ========================================= -->
+
+<script src="script.js"></script>
+
+
+
+<!-- =========================================
+     CCTV AND SAFETY RESOURCE DISPLAY
+     ========================================= -->
+
+<script>
+    (function () {
+
+        const apiBase = "http://localhost:8080/api";
+
+
+        function escapeHTML(value) {
+
+            return String(value ?? "").replace(/[&<>"']/g, ch => ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            }[ch]));
+
+        }
+
+
+
+        // =====================================
+        // LOAD AND DISPLAY CCTV DATA
+        // =====================================
+
+        window.loadCCTVData = async function () {
+
+            const box = document.getElementById(
+                "officer-cctv-container"
+            );
+
+            if (!box) return;
+
+            box.innerHTML =
+                '<p class="text-xs text-slate-400 col-span-full">Loading camera information...</p>';
+
+
+            try {
+
+                const response = await fetch(`${apiBase}/cctv`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const cameras = await response.json();
+
+
+                if (!Array.isArray(cameras) || cameras.length === 0) {
+
+                    box.innerHTML =
+                        '<p class="text-xs text-slate-400 col-span-full">No camera records available.</p>';
+
+                    return;
+
+                }
+
+
+                box.innerHTML = cameras.map(camera => {
+
+                    const online =
+                        String(camera.status || "UNKNOWN").toUpperCase() === "ONLINE";
+
+                    const motion = Boolean(camera.motionDetected);
+
+
+                    const badge = online
+                        ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
+                        : "text-rose-400 bg-rose-500/10 border-rose-500/30";
+
+
+                    return `
+
+              <article class="bg-slate-950/80
+                              border border-slate-800
+                              rounded-xl p-3">
+
+                <div class="flex items-start
+                            justify-between gap-2 mb-2">
+
+                  <p class="text-xs font-bold text-slate-200">
+
+                    ${escapeHTML(camera.name || `Camera ${camera.id ?? ""}`)}
+
+                  </p>
+
+
+                  <span class="text-[9px] px-2 py-1
+                               rounded border ${badge}">
+
+                    ${escapeHTML(camera.status || "UNKNOWN")}
+
+                  </span>
+
+                </div>
+
+
+                <p class="text-[10px]
+                          ${motion ? "text-amber-300" : "text-slate-400"}
+                          mb-2">
+
+                  ${motion
+                        ? "⚠ Motion detected (demo alert)"
+                        : "✓ No motion alert"}
+
+                </p>
+
+
+                <p class="text-[10px] text-slate-400">
+
+                  Coordinates:
+                  ${escapeHTML(camera.latitude)},
+                  ${escapeHTML(camera.longitude)}
+
+                </p>
+
+
+                <p class="text-[10px] text-slate-500
+                          mt-1 break-words">
+
+                  Heartbeat:
+                  ${escapeHTML(camera.lastHeartbeat || "Not available")}
+
+                </p>
+
+              </article>
+
+            `;
+
+                }).join("");
+
+
+            } catch (error) {
+
+                box.innerHTML = `
+
+            <p class="text-xs text-rose-300 col-span-full">
+
+              Could not load cameras.
+              Check that Spring Boot is running.
+
+            </p>
+
+          `;
+
+                console.error("CCTV loading failed:", error);
+
+            }
+
+        };
+
+
+
+        // =====================================
+        // LOAD AND DISPLAY SAFETY RESOURCES
+        // =====================================
+
+        window.loadSafetyResources = async function () {
+
+            const box = document.getElementById(
+                "officer-resources-container"
+            );
+
+            if (!box) return;
+
+            box.innerHTML =
+                '<p class="text-xs text-slate-400 col-span-full">Loading safety resources...</p>';
+
+
+            try {
+
+                const response = await fetch(`${apiBase}/resources`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const resources = await response.json();
+
+
+                if (!Array.isArray(resources) || resources.length === 0) {
+
+                    box.innerHTML =
+                        '<p class="text-xs text-slate-400 col-span-full">No safety resources available.</p>';
+
+                    return;
+
+                }
+
+
+                box.innerHTML = resources.map(resource => {
+
+                    const police =
+                        String(resource.type || "").toUpperCase() === "POLICE_STATION";
+
+
+                    const status = String(resource.status || "UNKNOWN");
+
+
+                    const statusClass =
+                        /AVAILABLE|ONLINE/i.test(status)
+                            ? "text-emerald-400"
+                            : "text-amber-300";
+
+
+                    const icon = police ? "shield-check" : "camera";
+
+
+                    const iconStyle = police
+                        ? "bg-rose-500/10 text-rose-400"
+                        : "bg-blue-500/10 text-blue-400";
+
+
+                    return `
+
+              <article class="bg-slate-950/80
+                              border border-slate-800
+                              rounded-xl p-3">
+
+                <div class="flex items-start gap-2 mb-2">
+
+                  <span class="rounded-lg p-2 ${iconStyle}">
+
+                    <i data-lucide="${icon}" class="w-4 h-4"></i>
+
+                  </span>
+
+
+                  <div class="min-w-0 flex-1">
+
+                    <p class="text-xs font-bold text-slate-200">
+
+                      ${escapeHTML(resource.name || "Unnamed resource")}
+
+                    </p>
+
+
+                    <p class="text-[9px] text-slate-500 mt-0.5">
+
+                      ${escapeHTML(
+                        String(resource.type || "RESOURCE").replace(/_/g, " ")
+                    )}
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+
+                <p class="text-[10px] ${statusClass}">
+
+                  Status: ${escapeHTML(status)}
+
+                </p>
+
+
+                <p class="text-[10px] text-slate-400 mt-1">
+
+                  Coordinates:
+                  ${escapeHTML(resource.latitude)},
+                  ${escapeHTML(resource.longitude)}
+
+                </p>
+
+              </article>
+
+            `;
+
+                }).join("");
+
+
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+
+
+            } catch (error) {
+
+                box.innerHTML = `
+
+            <p class="text-xs text-rose-300 col-span-full">
+
+              Could not load safety resources.
+              Check that Spring Boot is running.
+
+            </p>
+
+          `;
+
+                console.error("Safety resource loading failed:", error);
+
+            }
+
+        };
+
+
+
+        // =====================================
+        // LOAD DATA WHEN OFFICER OPENS SCREEN D
+        // =====================================
+
+        const originalSwitchScreen = window.switchScreen;
+
+
+        if (typeof originalSwitchScreen === "function") {
+
+            window.switchScreen = function (screenId) {
+
+                originalSwitchScreen.apply(this, arguments);
+
+
+                if (screenId === "D") {
+
+                    window.loadCCTVData();
+
+                    window.loadSafetyResources();
+
+                }
+
+            };
+
+        }
+
+    })();
+</script>
+
+</body>
+
+</html>

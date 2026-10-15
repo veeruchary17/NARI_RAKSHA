@@ -1,0 +1,391 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* =========================================
+   GLOBAL RESET
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #020617;
+    color: #f8fafc;
+    overflow: hidden;
+}
+
+/* =========================================
+   SCROLLBARS
+   ========================================= */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(2, 6, 23, 0.5);
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f43f5e;
+}
+
+/* =========================================
+   FULLSCREEN LEAFLET MAP
+   ========================================= */
+
+#app-map {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    background-color: #d4dadc !important;
+}
+
+#app-map .leaflet-tile-container img {
+    filter: brightness(0.95) contrast(1.05) saturate(0.85) !important;
+}
+
+.leaflet-container {
+    background: #d4dadc !important;
+}
+
+.leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.7) !important;
+    color: #334155 !important;
+    font-size: 9px !important;
+}
+
+/* Keep Leaflet map controls above map tiles. */
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 500;
+}
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+
+.nav-tab.active-tab {
+    background-color: #f43f5e;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px 0 rgba(225, 29, 72, 0.39);
+}
+
+.route-card {
+    transition: all 0.2s ease-in-out;
+}
+
+.route-card:hover {
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   MAP MARKERS
+   ========================================= */
+
+.custom-user-marker,
+.custom-sos-marker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.4);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+}
+
+.custom-user-marker div:first-child,
+.custom-sos-marker div:first-child {
+    animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* =========================================
+   GLASS EFFECT
+   ========================================= */
+
+.backdrop-blur-xl {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* =========================================
+   MAIN APPLICATION LAYOUT
+   ========================================= */
+
+#app-main {
+    z-index: 20;
+}
+
+/*
+  Dashboard containers should fit inside
+  the available viewport height.
+*/
+
+#app-main > div {
+    min-height: 0;
+}
+
+/* =========================================
+   TRAVELLER DASHBOARD
+   ========================================= */
+
+#screen-A {
+    min-height: 0;
+}
+
+/* Keep traveller controls independently scrollable. */
+#screen-A > div:first-child {
+    min-height: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #475569 transparent;
+}
+
+/* =========================================
+   EMERGENCY CONTROL ROOM
+   ========================================= */
+
+/*
+  IMPORTANT:
+  The existing Leaflet map remains fullscreen.
+  The officer dashboard occupies only the left
+  side of the screen on desktop.
+*/
+
+#screen-D {
+    position: relative;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+}
+
+/*
+  Control sidebar:
+  - Narrow on desktop
+  - Independently scrollable
+  - Does not cover the whole map
+*/
+
+.control-room-sidebar {
+    min-width: 0;
+    min-height: 0;
+    max-height: calc(100vh - 112px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #475569 transparent;
+    padding-right: 4px;
+}
+
+/* Keep individual control cards in normal flow. */
+.control-room-sidebar > section {
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+/* Ensure long incident details wrap instead of widening panels. */
+#officer-incident-container,
+#officer-cctv-container,
+#officer-resources-container {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+/* Consistent appearance for dashboard cards. */
+.control-room-sidebar section {
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+/* =========================================
+   CONTROL ROOM MAP AREA
+   ========================================= */
+
+/*
+  The map itself is #app-map.
+  This section provides labels and legend cards,
+  not another Leaflet map.
+*/
+
+.control-room-map-area {
+    min-width: 0;
+    min-height: 250px;
+    position: relative;
+    pointer-events: none;
+}
+
+/*
+  The status and legend cards are decorative
+  overlays and must not block map interaction.
+*/
+
+.control-room-map-area > div {
+    pointer-events: none;
+}
+
+/* =========================================
+   DASHBOARD CARD TEXT
+   ========================================= */
+
+#screen-D h2 {
+    line-height: 1.5;
+}
+
+#screen-D button {
+    transition:
+            background-color 0.2s ease,
+            border-color 0.2s ease,
+            color 0.2s ease;
+}
+
+/* =========================================
+   LOGIN SCREEN
+   ========================================= */
+
+#auth-screen {
+    overflow-y: auto;
+}
+
+#auth-screen input,
+#auth-screen select,
+#auth-screen button {
+    max-width: 100%;
+}
+
+/* =========================================
+   MAP MARKER POPUPS
+   ========================================= */
+
+.leaflet-popup-content-wrapper {
+    border-radius: 10px;
+}
+
+.leaflet-popup-content {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+}
+
+/* =========================================
+   RESPONSIVE: TABLETS AND DESKTOP
+   ========================================= */
+
+@media (min-width: 1024px) {
+    /*
+      Reserve four grid columns for the sidebar
+      and eight columns for the visible map area.
+    */
+
+    #screen-D {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .control-room-sidebar {
+        grid-column: span 4 / span 4;
+        max-height: calc(100vh - 112px);
+    }
+
+    .control-room-map-area {
+        grid-column: span 8 / span 8;
+        min-height: 0;
+    }
+}
+
+/* =========================================
+   RESPONSIVE: MOBILE
+   ========================================= */
+
+@media (max-width: 1023px) {
+    /*
+      On small screens the sidebar takes priority.
+      The user can scroll the dashboard to reach
+      all control-room information.
+    */
+
+    .control-room-sidebar {
+        width: 100%;
+        max-height: calc(100vh - 112px);
+    }
+
+    .control-room-map-area {
+        display: none;
+    }
+
+    #screen-D {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        overflow: hidden;
+    }
+
+    #screen-A > div:first-child {
+        max-height: calc(100vh - 112px);
+    }
+}
+
+/* =========================================
+   RESPONSIVE: SHORT LAPTOP SCREENS
+   ========================================= */
+
+@media (max-height: 700px) {
+    main#app-main {
+        top: 4.5rem;
+    }
+
+    .control-room-sidebar {
+        max-height: calc(100vh - 90px);
+    }
+
+    .control-room-sidebar > section {
+        padding: 0.75rem;
+    }
+
+    #screen-A > div:first-child {
+        max-height: calc(100vh - 90px);
+    }
+}
+
+/* =========================================
+   ACCESSIBILITY: REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
